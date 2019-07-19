@@ -1,0 +1,40 @@
+version: '3'
+services: 
+  sepa-cb:
+    hostname: sepa-cb
+    container_name: swamp-sepa
+    build: SEPA2/
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    environment:
+      - SEPA_ENV_ENDPOINT=virtuoso
+      - SEPA_ENV_ENDPOINT_HOST=virtuosodb
+    depends_on:
+      - virtuosodb
+
+  virtuosodb:
+    image: tenforce/virtuoso
+    hostname: virtuoso-db
+    container_name: swamp-virtuoso-db
+    ports:
+      - "8890:8890"
+      - "1111:1111"
+    environment:
+      - DBA_PASSWORD=123 
+      - SPARQL_UPDATE=true 
+      - DEFAULT_GRAPH=http://www.example.com/my-graph
+    volumes:
+      - virtuosodb:/data
+
+  # blazegraphdb:
+  #     image: nawer/blazegraph
+  #     environment:
+  #       JAVA_XMS: 512m
+  #       JAVA_XMX: 1g
+  #     volumes:
+  #       - ./var/blazegraph:/var/lib/blazegraph
+
+volumes:
+  virtuosodb: ~
+  #blazegraphdb: ~
